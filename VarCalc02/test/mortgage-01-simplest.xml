@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<function name="mortgage" builder="jsMonotonic">
+	<property name="scriptCode"><![CDATA[ r==0.0 ? P / N - c : (P * java.lang.Math.expm1(r) / - java.lang.Math.expm1(r * -N)) - c]]></property>
+	
+	<variable name="c" />
+	<variable name="P" />
+	<variable name="N" />
+	<variable name="r" />
+</function>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vc2:function xmlns:vc2="http://javier-aranda.com/VarCalc02/"
+	vc2:name="mortgage" vc2:builder="jsMonotonic">
+	<vc2:property vc2:name="caption">Mortgage/Fixed rate interest</vc2:property>
+	<vc2:property vc2:name="description">Mortgage formula calculator c = P r / (1 - (1+r)^-N) ; if r=0 then c=P/N</vc2:property>
+	<vc2:property vc2:name="defaultTargetVariable">c</vc2:property>
+	<vc2:property vc2:name="scriptCode"><![CDATA[ r==0.0 ? P / N - c : (P * (Math.exp(r) - 1) / (1 - Math.exp(r * -N))) - c]]></vc2:property>
+
+	<!-- Variable-types -->
+	<vc2:variable-type vc2:name="currency">
+		<vc2:type-unit vc2:name="currency" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">¤</vc2:property>
+			<vc2:property vc2:name="format">#,###,##0.00</vc2:property>
+			<vc2:property vc2:name="factor">1.0</vc2:property>
+		</vc2:type-unit>
+	</vc2:variable-type>
+
+	<vc2:variable-type vc2:name="time">
+		<vc2:type-unit vc2:name="months" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">months</vc2:property>
+			<vc2:property vc2:name="factor">1.0</vc2:property>
+		</vc2:type-unit>
+		<vc2:type-unit vc2:name="periods" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">periods</vc2:property>
+			<vc2:property vc2:name="factor">1.0</vc2:property>
+		</vc2:type-unit>
+		<vc2:type-unit vc2:name="years" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">years</vc2:property>
+			<vc2:property vc2:name="factor">0.083333333</vc2:property>
+		</vc2:type-unit>
+	</vc2:variable-type>
+
+	<vc2:variable-type vc2:name="interest">
+		<vc2:type-unit vc2:name="expRate" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">exp-rate</vc2:property>
+			<vc2:property vc2:name="factor">1.0</vc2:property>
+			<vc2:property vc2:name="format">0.00000000</vc2:property>
+		</vc2:type-unit>
+		<vc2:type-unit vc2:name="periodRate" vc2:builder="exponential">
+			<vc2:property vc2:name="caption">period rate</vc2:property>
+			<vc2:property vc2:name="factor">1.0</vc2:property>
+			<vc2:property vc2:name="format">0.00000000</vc2:property>
+		</vc2:type-unit>
+		<vc2:type-unit vc2:name="apr" vc2:builder="exponential">
+			<vc2:property vc2:name="caption">APR(%)</vc2:property>
+			<vc2:property vc2:name="factor">12.0</vc2:property>
+			<vc2:property vc2:name="format">0.00%</vc2:property>
+		</vc2:type-unit>
+	</vc2:variable-type>
+
+	<!-- Variables -->
+	<vc2:variable vc2:name="c" vc2:type="currency">
+		<vc2:property vc2:name="caption">Periodic payment</vc2:property>
+		<vc2:property vc2:name="initialDisplayValue">1000.0</vc2:property>
+		<vc2:property vc2:name="initialDisplayUnit">currency</vc2:property>
+		<vc2:property vc2:name="minValue">0</vc2:property>
+		<vc2:property vc2:name="maxValue">999999</vc2:property>
+		<vc2:property vc2:name="initialCalcValue">1000.0</vc2:property>
+	</vc2:variable>
+	<vc2:variable vc2:name="P" vc2:type="currency">
+		<vc2:property vc2:name="caption">Mortgage principal</vc2:property>
+		<vc2:property vc2:name="initialDisplayValue">200000.0</vc2:property>
+		<vc2:property vc2:name="initialDisplayUnit">currency</vc2:property>
+		<vc2:property vc2:name="minValue">0</vc2:property>
+		<vc2:property vc2:name="maxValue">9999999</vc2:property>
+		<vc2:property vc2:name="initialCalcValue">200000.0</vc2:property>
+	</vc2:variable>
+	<vc2:variable vc2:name="N" vc2:type="time">
+		<vc2:property vc2:name="caption">Duration</vc2:property>
+		<vc2:property vc2:name="initialDisplayValue">240.0</vc2:property>
+		<vc2:property vc2:name="initialDisplayUnit">years</vc2:property>
+		<vc2:property vc2:name="minValue">1</vc2:property>
+		<vc2:property vc2:name="maxValue">600</vc2:property>
+		<vc2:property vc2:name="initialCalcValue">60</vc2:property>
+	</vc2:variable>
+	<vc2:variable vc2:name="r" vc2:type="interest">
+		<vc2:property vc2:name="caption">Interest rate</vc2:property>
+		<vc2:property vc2:name="initialDisplayValue">0.001</vc2:property>
+		<vc2:property vc2:name="initialDisplayUnit">apr</vc2:property>
+		<vc2:property vc2:name="minValue">0</vc2:property>
+		<vc2:property vc2:name="maxValue">0.06</vc2:property><!-- A bit greater than 100% APR -->
+		<vc2:property vc2:name="initialCalcValue">0.03</vc2:property>
+	</vc2:variable>
+</vc2:function>

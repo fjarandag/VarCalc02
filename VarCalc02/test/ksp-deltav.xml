@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vc2:function xmlns:vc2="http://javier-aranda.com/VarCalc02/"
+	vc2:name="kspDeltaV" vc2:builder="jsMonotonic">
+	<vc2:property vc2:name="caption">KSP-DeltaV</vc2:property>
+	<vc2:property vc2:name="description">Remaining DeltaV in craft DeltaV=Ln(TotalMass/DryMass)*ISP*9.81</vc2:property>
+	<vc2:property vc2:name="defaultTargetVariable">DeltaV</vc2:property>
+	<vc2:property vc2:name="scriptCode"><![CDATA[ DeltaV - Math.log(TotalMass/(TotalMass-FuelMass))*ISP*9.81 ]]></vc2:property>
+
+	<!-- Variable-types -->
+	<vc2:variable-type vc2:name="speed">
+		<vc2:type-unit vc2:name="metersPerSecond" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">m/s</vc2:property>
+			<vc2:property vc2:name="format">#,##0.0</vc2:property>
+			<vc2:property vc2:name="factor">1.0</vc2:property>
+		</vc2:type-unit>
+	</vc2:variable-type>
+
+	<vc2:variable-type vc2:name="mass">
+		<vc2:type-unit vc2:name="tons" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">tons</vc2:property>
+			<vc2:property vc2:name="factor">1.0</vc2:property>
+			<vc2:property vc2:name="format">#,##0.000</vc2:property>
+		</vc2:type-unit>
+	</vc2:variable-type>
+	<vc2:variable-type vc2:name="fuelMass">
+		<vc2:type-unit vc2:name="tons" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">tons</vc2:property>
+			<vc2:property vc2:name="factor">1.0</vc2:property>
+			<vc2:property vc2:name="format">#,##0.000</vc2:property>
+		</vc2:type-unit>
+		<vc2:type-unit vc2:name="liquidFuel" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">Liquid Fuel</vc2:property>
+			<vc2:property vc2:name="factor">90.0</vc2:property>
+			<vc2:property vc2:name="format">#,##0.000</vc2:property>
+		</vc2:type-unit>
+		<vc2:type-unit vc2:name="mono" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">Monoprop</vc2:property>
+			<vc2:property vc2:name="factor">50.0</vc2:property>
+			<vc2:property vc2:name="format">#,##0.000</vc2:property>
+		</vc2:type-unit>
+		<vc2:type-unit vc2:name="xenon" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">Xenon</vc2:property>
+			<vc2:property vc2:name="factor">10000.0</vc2:property>
+			<vc2:property vc2:name="format">#,##0.000</vc2:property>
+		</vc2:type-unit>
+	</vc2:variable-type>
+
+	<vc2:variable-type vc2:name="isp">
+		<vc2:type-unit vc2:name="ispSec" vc2:builder="proportional">
+			<vc2:property vc2:name="caption">seconds</vc2:property>
+			<vc2:property vc2:name="factor">1.0</vc2:property>
+			<vc2:property vc2:name="format">#,##0.##</vc2:property>
+		</vc2:type-unit>
+	</vc2:variable-type>
+
+	<!-- Variables -->
+	<vc2:variable vc2:name="DeltaV" vc2:type="speed">
+		<vc2:property vc2:name="caption">DeltaV</vc2:property>
+		<vc2:property vc2:name="initialDisplayValue">1000.0</vc2:property>
+		<vc2:property vc2:name="initialDisplayUnit">metersPerSecond</vc2:property>
+		<vc2:property vc2:name="minValue">0</vc2:property>
+		<vc2:property vc2:name="maxValue">999999</vc2:property>
+		<vc2:property vc2:name="initialCalcValue">1000.0</vc2:property>
+	</vc2:variable>
+	<vc2:variable vc2:name="TotalMass" vc2:type="mass">
+		<vc2:property vc2:name="caption">Total mass</vc2:property>
+		<vc2:property vc2:name="initialDisplayValue">5.0</vc2:property>
+		<vc2:property vc2:name="initialDisplayUnit">tons</vc2:property>
+		<vc2:property vc2:name="minValue">0</vc2:property>
+		<vc2:property vc2:name="maxValue">9999</vc2:property>
+		<vc2:property vc2:name="initialCalcValue">5.0</vc2:property>
+	</vc2:variable>
+	<vc2:variable vc2:name="FuelMass" vc2:type="fuelMass">
+		<vc2:property vc2:name="caption">Fuel mass</vc2:property>
+		<vc2:property vc2:name="initialDisplayValue">2.0</vc2:property>
+		<vc2:property vc2:name="initialDisplayUnit">liquidFuel</vc2:property>
+		<vc2:property vc2:name="minValue">0</vc2:property>
+		<vc2:property vc2:name="maxValue">9999</vc2:property>
+		<vc2:property vc2:name="initialCalcValue">10.0</vc2:property>
+	</vc2:variable>
+	<vc2:variable vc2:name="ISP" vc2:type="isp">
+		<vc2:property vc2:name="caption">Isp</vc2:property>
+		<vc2:property vc2:name="description">Specific Impulse</vc2:property>
+		<vc2:property vc2:name="initialDisplayValue">390</vc2:property>
+		<vc2:property vc2:name="initialDisplayUnit">ispSec</vc2:property>
+		<vc2:property vc2:name="minValue">0</vc2:property>
+		<vc2:property vc2:name="maxValue">99999</vc2:property>
+		<vc2:property vc2:name="initialCalcValue">390</vc2:property>
+	</vc2:variable>
+</vc2:function>

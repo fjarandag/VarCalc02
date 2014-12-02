@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vc2:function xmlns:vc2="http://javier-aranda.com/VarCalc02/"
+	name="mortgage" vc2:type="monotonic" vc2:builder="script">
+	<vc2:properties>
+		<vc2:caption>Mortgage/Fixed rate interest</vc2:caption>
+		<vc2:description>Mortgage formula calculator c = P r / (1 - (1+r)^-N) ; if r=0 then c=P/N</vc2:description>
+		<vc2:property name="initialTarget">c</vc2:property>
+		<vc2:property name="scriptLanguage">JavaScript</vc2:property>
+		<vc2:property name="scriptCode"><![CDATA[ r==0.0 ? P / N - c : (P * (Math.exp(r) - 1) / (1 - Math.exp(r * -N))) - c]]></vc2:property>
+		
+	</vc2:properties>
+	
+	<vc2:variable-types>
+		<vc2:variable-type name="currency">
+			<vc2:type-unit name="currency" vc2:builder="proportional">
+				<vc2:caption>¤</vc2:caption>
+				<vc2:properties>
+					<vc2:property name="format">#,###,##0.00</vc2:property>
+					<vc2:property name="factor">1.0</vc2:property>
+				</vc2:properties>
+			</vc2:type-unit>
+		</vc2:variable-type>
+
+		<vc2:variable-type name="time">
+			<vc2:type-unit name="months" vc2:builder="proportional">
+				<vc2:caption>months</vc2:caption>
+				<vc2:properties>
+					<vc2:property name="factor">1.0</vc2:property>
+				</vc2:properties>
+			</vc2:type-unit>
+			<vc2:type-unit name="periods" vc2:builder="proportional">
+				<vc2:caption>months</vc2:caption>
+				<vc2:properties>
+					<vc2:property name="factor">1.0</vc2:property>
+				</vc2:properties>
+			</vc2:type-unit>
+			<vc2:type-unit name="years" vc2:builder="proportional">
+				<vc2:caption>months</vc2:caption>
+				<vc2:properties>
+					<vc2:property name="factor">0.083333333</vc2:property>
+				</vc2:properties>
+			</vc2:type-unit>
+		</vc2:variable-type>
+
+		<vc2:variable-type name="interest">
+			<vc2:type-unit name="expRate" vc2:builder="proportional">
+				<vc2:caption>exp-rate</vc2:caption>
+				<vc2:properties>
+					<vc2:property name="factor">1.0</vc2:property>
+					<vc2:property name="format">0.00000000</vc2:property>
+				</vc2:properties>
+			</vc2:type-unit>
+			<vc2:type-unit name="periodRate" vc2:builder="exponential">
+				<vc2:caption>period rate</vc2:caption>
+				<vc2:properties>
+					<vc2:property name="factor">1.0</vc2:property>
+					<vc2:property name="format">0.00000000</vc2:property>
+				</vc2:properties>
+			</vc2:type-unit>
+			<vc2:type-unit name="apr" vc2:builder="exponential">
+				<vc2:caption>APR(%)</vc2:caption>
+				<vc2:properties>
+					<vc2:property name="factor">12.0</vc2:property>
+					<vc2:property name="format">0.00%</vc2:property>
+				</vc2:properties>
+			</vc2:type-unit>
+		</vc2:variable-type>
+	</vc2:variable-types>
+	
+	<vc2:variables>
+		<vc2:variable name="c" vc2:type="currency">
+			<vc2:caption>Periodic payment</vc2:caption>
+			<vc2:properties>
+				<vc2:property name="presetValue">1000.0</vc2:property>
+			</vc2:properties>
+		</vc2:variable>
+		<vc2:variable name="P" vc2:type="currency">
+			<vc2:caption>Mortgage principal</vc2:caption>
+			<vc2:properties>
+				<vc2:property name="presetValue">200000.0</vc2:property>
+			</vc2:properties>
+		</vc2:variable>
+		<vc2:variable name="N" vc2:type="time">
+			<vc2:caption>Duration</vc2:caption>
+			<vc2:properties>
+				<vc2:property name="presetValue">240.0</vc2:property>
+				<vc2:property name="presetUnit">years</vc2:property>
+			</vc2:properties>
+		</vc2:variable>
+		<vc2:variable name="r" vc2:type="interest">
+			<vc2:caption>Interest rate</vc2:caption>
+			<vc2:properties>
+				<vc2:property name="presetValue">0.001</vc2:property>
+				<vc2:property name="presetUnit">apr</vc2:property>
+			</vc2:properties>
+		</vc2:variable>
+	</vc2:variables>
+</vc2:function>

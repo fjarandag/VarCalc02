@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vc2:function xmlns:vc2="http://javier-aranda.com/VarCalc02/"
+	vc2:name="mortgage" vc2:builder="jsMonotonic">
+	<vc2:property vc2:name="scriptCode"><![CDATA[ r==0.0 ? P / N - c : (P * java.lang.Math.expm1(r) / - java.lang.Math.expm1(r * -N)) - c]]></vc2:property>
+	
+	<vc2:variable vc2:name="c" />
+	<vc2:variable vc2:name="P" />
+	<vc2:variable vc2:name="N" />
+	<vc2:variable vc2:name="r" />
+</vc2:function>
