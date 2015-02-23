@@ -1,17 +1,28 @@
 package varcalc02;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import varcalc02.xml.BuilderContext;
 import varcalc02.xml.SimpleBuilder;
@@ -52,26 +63,7 @@ public class VarCalc02 {
 			if (strUrl == null) {
 				l_function = createMortgageFunction();
 			} else {
-				// load function from URL
-				URL l_url = new URL(strUrl);
-				DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-				docBuilderFactory.setNamespaceAware(true);
-				DocumentBuilder builder =  docBuilderFactory.newDocumentBuilder();
-				InputStream stream = l_url.openStream();
-				Document doc = builder.parse(stream);
-				stream.close();
-				
-				// might be using namespace. Using the NS found for the function element.
-				// Might be weird if there is a different function element found earlier under a different namespace.
-				// Element eleFunction = (Element)doc.getElementsByTagName("function").item(0);
-				Element eleFunction = (Element)doc.getElementsByTagNameNS("*", "function").item(0);
-				String funcNS = eleFunction.getNamespaceURI();
-				BuilderContext funcContext = new BuilderContext();
-				funcContext.setNamespace(funcNS);
-				
-				SimpleBuilder<Function> functionBuilder = XmlUtil.getRegisteredBuilder(Function.class, eleFunction, funcContext);
-
-				l_function = functionBuilder.buildFromDom(eleFunction, funcContext);
+				l_function = loadFunctionFromUrl(strUrl);
 			}
 			
 			SwingUtilities.invokeLater(new Runnable() {
@@ -82,6 +74,10 @@ public class VarCalc02 {
 					
 					FunctionPanel panel = new FunctionPanel();
 					panel.setFunction(l_function);
+					
+					bindMenuBar(frame);
+					
+					setIcon(frame);
 					
 					panel.setOpaque(true);
 					frame.setContentPane(panel);
@@ -95,7 +91,89 @@ public class VarCalc02 {
 			handle(e);
 		}
 	}
+
+	private static Function loadFunctionFromUrl(String strUrl)
+			throws MalformedURLException, ParserConfigurationException,
+			IOException, SAXException {
+		final Function l_function;
+		// load function from URL
+		URL l_url = new URL(strUrl);
+		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+		docBuilderFactory.setNamespaceAware(true);
+		DocumentBuilder builder =  docBuilderFactory.newDocumentBuilder();
+		InputStream stream = l_url.openStream();
+		Document doc = builder.parse(stream);
+		stream.close();
+		
+		// might be using namespace. Using the NS found for the function element.
+		// Might be weird if there is a different function element found earlier under a different namespace.
+		// Element eleFunction = (Element)doc.getElementsByTagName("function").item(0);
+		Element eleFunction = (Element)doc.getElementsByTagNameNS("*", "function").item(0);
+		String funcNS = eleFunction.getNamespaceURI();
+		BuilderContext funcContext = new BuilderContext();
+		funcContext.setNamespace(funcNS);
+		
+		SimpleBuilder<Function> functionBuilder = XmlUtil.getRegisteredBuilder(Function.class, eleFunction, funcContext);
+
+		l_function = functionBuilder.buildFromDom(eleFunction, funcContext);
+		return l_function;
+	}
 	
+	private static class MenuListener implements ActionListener {
+		private JFrame boundFrame;
+		public MenuListener(JFrame boundFrame) { this.boundFrame = boundFrame; }
+		@Override
+		public void actionPerformed(ActionEvent evt) {
+			String action = evt.getActionCommand();
+			if (action.equals("exit")) {
+				boundFrame.dispose();
+				// closing events should terminate application.
+			} else if (action.equals("load")) {
+				String loadUrl = (String)JOptionPane.showInputDialog(boundFrame, "Enter URL for function file");
+				try {
+					Function function = loadFunctionFromUrl(loadUrl);
+					FunctionPanel panel = (FunctionPanel)boundFrame.getContentPane();
+					panel.setFunction(function);
+					panel.repaint();
+					panel.revalidate();
+				} catch (Exception e) {
+					JOptionPane.showInternalMessageDialog(boundFrame, 
+							"could not load function from URL: " + e.getMessage(), "VarCalc02 error",
+							JOptionPane.ERROR_MESSAGE);
+					e.printStackTrace(System.err);// TODO centralized handle
+				}
+			}
+			
+		}
+		
+	}
+	private static void bindMenuBar(JFrame varcalc02frame) {
+		MenuListener menuListener = new MenuListener(varcalc02frame);
+		JMenuBar menuBar = new JMenuBar();
+		JMenuItem itemLoad = new JMenuItem("Load...", 'l');
+		itemLoad.setActionCommand("load");
+		itemLoad.addActionListener(menuListener);
+		menuBar.add(itemLoad);
+		
+		JMenuItem itemExit = new JMenuItem("Exit", 'x');
+		itemExit.setActionCommand("exit");
+		itemExit.addActionListener(menuListener);
+		menuBar.add(itemExit);
+		
+		varcalc02frame.setJMenuBar(menuBar);
+	}
+	
+	private static void setIcon(JFrame frame) {
+		try {
+			InputStream iconStream = VarCalc02.class.getResourceAsStream("/varcalc02/func-32.png");
+			BufferedImage image = ImageIO.read(iconStream);
+			frame.setIconImage(image);
+		} catch(Exception e) {
+			e.printStackTrace(System.err); // TODO centralized handle
+		}
+	}
+	
+
 	public static Function createMortgageFunction() {
 		// From http://en.wikipedia.org/wiki/Mortgage_calculator
 		// c = r P / (1 - (1+r)^-N)
@@ -172,4 +250,5 @@ public class VarCalc02 {
 		return e;
 	}
 	
+
 }
