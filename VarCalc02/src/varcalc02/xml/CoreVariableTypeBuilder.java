@@ -11,6 +11,12 @@ import varcalc02.VarCalc02;
 import varcalc02.VariableType;
 import varcalc02.VariableTypeUnit;
 
+/**
+ * Builder for the VariableType.
+ * @author Javier Aranda (javier-aranda.com)
+ * CC SA BY
+ */
+// TT-LOW Specification for properties and child elements.
 public class CoreVariableTypeBuilder extends SimpleBuilder<VariableType> {
 
 	private static CoreVariableTypeBuilder s_instance = new CoreVariableTypeBuilder();
@@ -19,7 +25,7 @@ public class CoreVariableTypeBuilder extends SimpleBuilder<VariableType> {
 		return s_instance;
 	}
 	
-	static {
+	static { // Initialization. Need Class.forName( ) done before look up. Done in XmlUtil.
 		XmlUtil.registerBuilder(VariableType.class, "default", instance("default"));
 	}
 	

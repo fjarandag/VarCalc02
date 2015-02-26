@@ -6,7 +6,11 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
-
+/**
+ * Function where the calculation is executing from script code loaded on runtime.
+ * @author Javier Aranda (javier-aranda.com)
+ * CC SA BY
+ */
 public class ScriptFunction extends Function {
 	private String scriptLanguage;
 	private String scriptCode;
@@ -16,6 +20,9 @@ public class ScriptFunction extends Function {
 		super();
 	}
 
+	/** Scripting language used (e g JavaScript, be careful with uppercase).
+	 * Should be supported by the JRE builtin scripting engine (Rhino).
+	 */
 	public String getScriptLanguage() {
 		return scriptLanguage;
 	}
@@ -26,6 +33,10 @@ public class ScriptFunction extends Function {
 	}
 
 
+	/**
+	 * Scripting code to be executed as the function.
+	 * The result of the (last) statement is the result.
+	 */
 	public String getScriptCode() {
 		return scriptCode;
 	}
@@ -54,7 +65,9 @@ public class ScriptFunction extends Function {
 			result = ((Number) engine.eval(this.scriptCode, bindings))
 					.doubleValue();
 		} catch (ScriptException e) {
-			throw new ArithmeticException(e.getMessage());
+			// Stack traces from within the script interpreter might not be too significative.
+			// Hope you wont mind too much if they are lost
+			throw new ArithmeticException(e.getMessage() + ":" + e.getLineNumber());
 		}
 		return result;
 	}

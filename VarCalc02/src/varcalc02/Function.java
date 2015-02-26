@@ -33,24 +33,16 @@ public abstract class Function {
 	
 	// TT-REDESIGN might use caption as name. However, name should be a valid file name.
 	// However caption would be i18n-able. But that is a bit far forward.
-	/** Internal name (used as key). Should be an adequate file name. */
+	
+	// Fields. Check getters doc for information.
 	private String name;
 	// caption
-	/** Text shown at the calculator panel. Might be more descriptive than name. */
 	private String caption;
-	/** Description for function shown at the calculator panel. */
 	private String description;
-	/** Longer and richer (html) description for the function. Optional */
 	private String longDescription;
-	/** Type of function (monotonic, oneway, etc?). Handling will depend on type. */
 	private String behavior;
-	/** Which variable will be selected as target initially. */
 	private String defaultTargetVariable;
-
-	/** Variable types (for information, or unit conversion combos) */
 	private VariableType[] variableTypes;
-
-	/** Variables used in function. */
 	private FunctionVariable[] variables;
 
 	public Function() {
@@ -58,6 +50,7 @@ public abstract class Function {
 	}
 	// TT-LOW Define some factory, etc for filling in data
 
+	/** Internal name (used as key). Should be an adequate file name. */
 	public String getName() {
 		return name;
 	}
@@ -66,6 +59,7 @@ public abstract class Function {
 		this.name = name;
 	}
 
+	/** Text shown at the calculator panel. Might be more descriptive than name. */
 	public String getCaption() {
 		return caption;
 	}
@@ -74,6 +68,7 @@ public abstract class Function {
 		this.caption = caption;
 	}
 
+	/** Description for function shown at the calculator panel. */
 	public String getDescription() {
 		return description;
 	}
@@ -82,6 +77,7 @@ public abstract class Function {
 		this.description = description;
 	}
 
+	/** Longer and richer (html) description for the function. To be implemented */
 	public String getLongDescription() {
 		return longDescription;
 	}
@@ -90,6 +86,7 @@ public abstract class Function {
 		this.longDescription = longDescription;
 	}
 
+	/** Type of function (#MONOTONIC, #ONEWAY, etc?). Handling will depend on type. */
 	public String getBehavior() {
 		return behavior;
 	}
@@ -98,6 +95,7 @@ public abstract class Function {
 		this.behavior = type;
 	}
 
+	/** Which variable will be selected as target initially. */
 	public String getDefaultTargetVariable() {
 		return defaultTargetVariable;
 	}
@@ -106,6 +104,7 @@ public abstract class Function {
 		this.defaultTargetVariable = defaultTarget;
 	}
 
+	/** Variable types (for information, or unit conversion combos) */
 	public VariableType[] getVariableTypes() {
 		return variableTypes;
 	}
@@ -114,6 +113,10 @@ public abstract class Function {
 		this.variableTypes = variableTypes;
 	}
 	
+	/**
+	 * returns the VariableType with the given type name. E.g. the "currency" type within the mortgage function.
+	 * @throws IllegalArgumentException iff type name not found.
+	 */
 	public VariableType getVariableType(String typeName) {
 		// Note: Not using a hashmap. how many types to be worth ?
 		for (VariableType atVarType : variableTypes) {
@@ -124,6 +127,7 @@ public abstract class Function {
 		throw new IllegalArgumentException("not found " + typeName);
 	}
 
+	/** Variables used in function. */
 	public FunctionVariable[] getVariables() {
 		return variables;
 	}
@@ -132,6 +136,10 @@ public abstract class Function {
 		this.variables = variables;
 	}
 
+	/**
+	 * returns the FunctionVariable with the given variable name. E.g. the "r"(rate) variable within the mortgage function.
+	 * @throws IllegalArgumentException iff variable name not found.
+	 */
 	public FunctionVariable getVariable(String varName) {
 		// Note: Not using a hashmap. how many types to be worth ?
 		for (FunctionVariable atVar : variables) {
@@ -166,6 +174,7 @@ public abstract class Function {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
+	// functions will be considered the same if the name fields are equal.
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -174,8 +183,8 @@ public abstract class Function {
 		if (getClass() != obj.getClass())
 			return false;
 		Function other = (Function) obj;
-		if (name == null) {
-			if (other.caption != null)
+		if (name == null) { // TT-LOW name is allowed to be null?
+			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
@@ -185,6 +194,8 @@ public abstract class Function {
 	// Function evaluation. Abstract at this level
 	// Calculate function. The zero aproximation to 1-N values should be carried by an engine supplied by calculator.
 	public abstract double calculate(double[] varValues, HashMap<String, Object> context) throws ArithmeticException;
+	
+	// TT-LOW VarCalc02#epsilon might be better defined (and overridden if necessary) here.
 
 	
 }

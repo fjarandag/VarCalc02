@@ -13,6 +13,12 @@ import varcalc02.VarCalc02;
 import varcalc02.VariableType;
 import varcalc02.VariableTypeUnit;
 
+/**
+ * Builder for {@link VariableTypeUnit}.
+ * @author Javier Aranda (javier-aranda.com)
+ * CC SA BY
+ */
+// TT-LOW Specification for properties
 public class CoreVariableTypeUnitBuilder extends SimpleBuilder<VariableTypeUnit> {
 
 	private static CoreVariableTypeUnitBuilder s_instance = new CoreVariableTypeUnitBuilder();
@@ -21,7 +27,7 @@ public class CoreVariableTypeUnitBuilder extends SimpleBuilder<VariableTypeUnit>
 		return s_instance;
 	}
 	
-	static {
+	static { // Initialization. Class.forName() needed before look up. Done in XmlUtil.
 		XmlUtil.registerBuilder(VariableTypeUnit.class, "default", instance("proportional"));
 		XmlUtil.registerBuilder(VariableTypeUnit.class, "proportional", instance("proportional"));
 		XmlUtil.registerBuilder(VariableTypeUnit.class, "exponential", instance("exponential"));

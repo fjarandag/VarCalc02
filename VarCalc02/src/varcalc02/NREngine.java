@@ -3,7 +3,7 @@ package varcalc02;
 import java.util.HashMap;
 
 /**
- * Engine using Newton-Raphson method for zero of function aproximation.
+ * Engine using Newton-Raphson method for zero of function approximation.
  * https://en.wikipedia.org/wiki/Newton's_method
  * @author Javier Aranda (javier-aranda.com)
  * CC SA BY
@@ -25,7 +25,8 @@ public class NREngine implements SolutionEngine {
 		int stepCount = 0;
 		boolean precisionAchieved = false;
 		
-		while (!precisionAchieved) { // While not enough approach
+		// approximate until required precision is achieved, or trying for too long
+		while (!precisionAchieved) {
 			double resAtTarget = function.calculate(varValues, context);
 			// TT-LOW Might detect if converging or running in circles (or into infinity).
 			if (stepCount >= 20) {
@@ -33,12 +34,13 @@ public class NREngine implements SolutionEngine {
 			}
 
 			// Extrapolate next target value
-			// slope
+			// slope : f'(x) calculated as ( f(x+ε) - f(x) ) / ε
 			double epsilon = VarCalc02.epsilon(function, varValues, targetVar);
 			varValues[targetVar] = targetValue + epsilon;
 			double resAtTarget2 = function.calculate(varValues, context);
 			double slope = (resAtTarget2 - resAtTarget) / epsilon;
 			
+			// refine x value (targetValue) for next iteration
 			double nextValue = targetValue - resAtTarget / slope;
 			
 			if (VarCalc02.DEBUG) {

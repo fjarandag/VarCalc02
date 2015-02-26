@@ -17,8 +17,23 @@ import varcalc02.ScriptFunction;
 import varcalc02.VarCalc02;
 import varcalc02.VariableType;
 
+/**
+ * Simple Builder for Function object.
+ * Intended for JavaScript  (or similar) script based functions (as mortgage-01-simplest.xml and siblings).
+ * @author Javier Aranda (javier-aranda.com)
+ * CC SA BY
+ */
+// TT-LOW provide some specification of the element setup. properties definition, examples.
 public class CoreFunctionBuilder extends SimpleBuilder<Function> {
 	// PARADIGM Builder for a complex type with nested types.
+	
+	// Registration. Need to invoke somewhere beforehand. As in XmlUtil initialization.
+	//	Class.forName("varcalc02.xml.CoreFunctionBuilder")
+	static {
+		XmlUtil.registerBuilder(Function.class, "default", instance("default"));
+		XmlUtil.registerBuilder(Function.class, "jsMonotonic", instance("jsMonotonic"));
+	}
+	
 	private static CoreFunctionBuilder s_instance = new CoreFunctionBuilder();
 	public static CoreFunctionBuilder instance(String builderName) {
 		// TT-LOW
@@ -30,11 +45,7 @@ public class CoreFunctionBuilder extends SimpleBuilder<Function> {
 	
 	private static Set<String> s_ommitable = XmlUtil.unmodifiableSet("builder");
 	
-	static {
-		XmlUtil.registerBuilder(Function.class, "default", instance("default"));
-		XmlUtil.registerBuilder(Function.class, "jsMonotonic", instance("jsMonotonic"));
-	}
-	
+	// Create function item with core attributes. Variables and types will be added afterwards.
 	@Override
 	protected Function createItem(Element ele, Map<String, String> properties, BuilderContext context) {
 		
@@ -82,8 +93,18 @@ public class CoreFunctionBuilder extends SimpleBuilder<Function> {
 		return func;
 	}
 
+	// build and add types and variables to temporary lists
 	@Override
 	protected void handleChild(Element child, BuilderContext childrenContext) {
+		// TT-LOW Create XmlUtils#checkElementName(Element, String) or similar instead of this boiler-plate expression
+		// rest of the process is repetitive as well
+/* TT-LOW consider Alternative:
+item = autoBuild(child, childrenContext);
+if (item instanceof VariableType) {
+	childrenContext.addToListProperty("variableTypes", item);
+} else ...
+
+ */
 		if (child.getLocalName().equals("variable-type") && childrenContext.equalsNamespace(child.getNamespaceURI())) {
 			List<VariableType> varTypes = (List<VariableType>)childrenContext.get("variableTypes");
 			SimpleBuilder<VariableType> builder = XmlUtil.getRegisteredBuilder(VariableType.class, child, childrenContext);
@@ -100,6 +121,7 @@ public class CoreFunctionBuilder extends SimpleBuilder<Function> {
 
 	}
 
+	// convert temporary children lists into the array properties
 	@Override
 	protected void handleElementDone(Element ele, BuilderContext childrenContext) {
 		Function function = (Function)childrenContext.get("parentItem");

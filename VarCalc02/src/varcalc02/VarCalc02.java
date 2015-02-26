@@ -75,7 +75,7 @@ public class VarCalc02 {
 					FunctionPanel panel = new FunctionPanel();
 					panel.setFunction(l_function);
 					
-					bindMenuBar(frame);
+					createAndSetMenuBar(frame);
 					
 					setIcon(frame);
 					
@@ -92,10 +92,13 @@ public class VarCalc02 {
 		}
 	}
 
+	// Main method delegates
+	//
+	
+	/** Create a function object from an URL (which content is the function's xml). */
 	private static Function loadFunctionFromUrl(String strUrl)
 			throws MalformedURLException, ParserConfigurationException,
 			IOException, SAXException {
-		final Function l_function;
 		// load function from URL
 		URL l_url = new URL(strUrl);
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -115,10 +118,11 @@ public class VarCalc02 {
 		
 		SimpleBuilder<Function> functionBuilder = XmlUtil.getRegisteredBuilder(Function.class, eleFunction, funcContext);
 
-		l_function = functionBuilder.buildFromDom(eleFunction, funcContext);
+		Function l_function = functionBuilder.buildFromDom(eleFunction, funcContext);
 		return l_function;
 	}
 	
+	/** Handles the menu items events, such as actions for loading URL or exiting application. */
 	private static class MenuListener implements ActionListener {
 		private JFrame boundFrame;
 		public MenuListener(JFrame boundFrame) { this.boundFrame = boundFrame; }
@@ -127,27 +131,33 @@ public class VarCalc02 {
 			String action = evt.getActionCommand();
 			if (action.equals("exit")) {
 				boundFrame.dispose();
-				// closing events should terminate application.
+				// (application terminated) as dispose() triggers close Window event.
 			} else if (action.equals("load")) {
 				String loadUrl = (String)JOptionPane.showInputDialog(boundFrame, "Enter URL for function file");
 				try {
 					Function function = loadFunctionFromUrl(loadUrl);
 					FunctionPanel panel = (FunctionPanel)boundFrame.getContentPane();
 					panel.setFunction(function);
-					panel.repaint();
+					// Force repaint
+					// - repaint by itself does not seem to work, display does not update until layout is recalculated (when changing window size)
+					// - Alternatively might replace the function panel (http://stackoverflow.com/questions/1097366/java-swing-revalidate-vs-repaint)
+					//panel.repaint();
 					panel.revalidate();
 				} catch (Exception e) {
 					JOptionPane.showInternalMessageDialog(boundFrame, 
 							"could not load function from URL: " + e.getMessage(), "VarCalc02 error",
 							JOptionPane.ERROR_MESSAGE);
-					e.printStackTrace(System.err);// TODO centralized handle
+					handle(e);
 				}
 			}
 			
 		}
 		
 	}
-	private static void bindMenuBar(JFrame varcalc02frame) {
+	
+	/** Create menubar for the frame/window. */
+	// Creates separate instances to allow multiple windows in the future
+	private static void createAndSetMenuBar(JFrame varcalc02frame) {
 		MenuListener menuListener = new MenuListener(varcalc02frame);
 		JMenuBar menuBar = new JMenuBar();
 		JMenuItem itemLoad = new JMenuItem("Load...", 'l');
@@ -163,17 +173,21 @@ public class VarCalc02 {
 		varcalc02frame.setJMenuBar(menuBar);
 	}
 	
+	/** Loads and sets the icon for the window/frame. */
 	private static void setIcon(JFrame frame) {
 		try {
 			InputStream iconStream = VarCalc02.class.getResourceAsStream("/varcalc02/func-32.png");
 			BufferedImage image = ImageIO.read(iconStream);
 			frame.setIconImage(image);
 		} catch(Exception e) {
-			e.printStackTrace(System.err); // TODO centralized handle
+			handle(e);
 		}
 	}
 	
 
+	/**
+	 * Creates the default mortgage function, used for demonstration.
+	 */
 	public static Function createMortgageFunction() {
 		// From http://en.wikipedia.org/wiki/Mortgage_calculator
 		// c = r P / (1 - (1+r)^-N)
@@ -220,30 +234,45 @@ public class VarCalc02 {
 
 		return function;
 	}
+
+	
+	// Functions intended to be used elsewhere
+	//
 	
 	// Logging. Not using any particular library for very simple needs
 	public static boolean DEBUG = true;
 	
+	/**
+	 * Handles simple login within application. Message formatting as in String#format(String, Object...).
+	 */
 	public static void log(String msg, Object ... args) {
 		String formatted = String.format(msg, args);
 		System.err.println(formatted);
 	}
 	
+	/**
+	 * Handles simple exception logging within application.
+	 */
 	public static void handle(Throwable e) {
 		e.printStackTrace(System.err);
 	}
 
 
-	// Calculating epsilon for a given variable and values
-	// epsilon variable is used for zero-of-function aproximation
-	// epsilon must be as small as posible for greater precision, but too small an epsilon might fail
-	//   (because of floating point precision limits in initial and intermediate values and roundings). 
-	// Different variables in a function might have different range of good epsilon values.
-	// 	At this point this specific setting wont be introduced.
-	// Good epsilon values will depend on the magnitude of a variable. We might need a lower epsilon for values very near zero.
-	//	At this point epsilon will be max(10^-12,x*10^-12). Which is good for 12 decimals precision.
-	//	Double precision allows 52 mantissa bits (around 17 decimals)
-	// TT-REDESIGN If result precision attribute is introduced in variables setting, might need to rethink implementation
+	/**
+	 * Calculate the epsilon value used in the approximation algorithm.
+	 * epsilon is an small increment in a variable, used to obtain the function's slope.
+	 * An inappropriate epsilon value might produce errors if not small enough (the slope changes within the gap) or if too small
+	 * (precision truncation within function might induce too small a difference, or "jitter" might become an issue).
+	 * Currently a combination of an absolute value and a relative value is used ( max(10^-12,x*10^-12) ),
+	 * but further refination-customization might be appropriate.
+	 * @param f Function being evaluated
+	 * @param varValues values of the variables in the current approximation.
+	 * @param targetVar index of the variable being approximated.
+	 * @return recommended epsilon value.
+	 */
+	// TT-REDESIGN [customizable-epsilon] Might be interesting to allow telling in each variable
+	//    how small a value is tolerable, although that might depend on other variables.
+	//    Maybe epsilon should be provided by function implementation. 
 	public static double epsilon(Function f, double[] varValues, int targetVar) {
 		double x = varValues[targetVar];
 		double e = Math.max(1e-12, x * 1e-12);

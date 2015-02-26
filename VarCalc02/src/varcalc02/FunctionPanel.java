@@ -1,5 +1,6 @@
 package varcalc02;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,25 +19,50 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+/**
+ * Panel for GUI for Function.
+ * Displays basic information about the function, and current value and selected units for variables.
+ * Allow selecting a variable to be calculated, and infer its value from the values entered in other variables.
+ * @author Javier Aranda (javier-aranda.com)
+ * CC SA BY
+ */
 @SuppressWarnings("serial")
 public class FunctionPanel extends JPanel implements ActionListener, FocusListener {
-
+	//
+	// Data elements
+	//
+	/** Function object displayed in panel. */
 	private Function function;
-	private JRadioButton[] rbVariables;
-	private ButtonGroup groupVariables;
-//	private JLabel[] labelsVariables;
-	private JTextField[] fieldsVariables;
-	private JComboBox<String>[] combosUnits;
-	
+	/** Index (as in variables array within function) of the variable being calculated. */
 	private int selectedVariable;
-	// Note: Values are converted into calculate units
+	/**
+	 *  Current values of the variables. Indices correlate to variables array within Function.
+	 * Notice the stored values are in the units used by Function#calculate. Therefore must convert from and to displayed units as needed.
+	 */
 	private double[] valuesVariables;
 	
-	/** Variable units currently selected. */
+	/** Variable units currently selected. Indices correlate to variables array within Function. */
 	private VariableTypeUnit[] unitsSelected;
-	/** Units used in actual calculation. */
-//	private VariableTypeUnit[] unitsCalculate;
 	
+	//
+	// Interface elements
+	//
+	/** Radio buttons for selecting calculated variable (and displaying variable's label). Indices correlate to variables array within Function. */
+	private JRadioButton[] rbVariables;
+	/** Group for #rbVariables. */
+	private ButtonGroup groupVariables;
+	// TT-LOW labels might be useful if/where radioButtons not used (but in that case radioButtons might be disabled).
+//	private JLabel[] labelsVariables;
+	/** Text boxes containing values for variables. Indices correlate to Function#variables. */
+	private JTextField[] fieldsVariables;
+	/** Optional selection boxes for available variable units (meters, feet). As provided by VariableType#units from each variable's type. */
+	private JComboBox<String>[] combosUnits;
+	/** Position in the layout of the first row containing variables. */
+	private int gridy_firstVariable = 1;
+	
+	//
+	// Initialization
+	//
 	public FunctionPanel() {
 		super(new GridBagLayout());
 		
@@ -45,10 +71,12 @@ public class FunctionPanel extends JPanel implements ActionListener, FocusListen
 	
 	/**
 	 * Set the function object into the panel.
-	 * The panel components are re-deployed.
+	 * If the panel was configured for a previous function, previous components are cleared and the panel set up again.
+	 * The caller might need to invoke #revalidate() in order to make the content property displayed.
 	 * @param newFunction
 	 */
-	public void setFunction(Function newFunction) {
+	// Not reentrant as fields are altered within
+	public synchronized void setFunction(Function newFunction) {
 		this.function = newFunction;
 		
 		// Just in case there was a previous deployment
@@ -58,9 +86,7 @@ public class FunctionPanel extends JPanel implements ActionListener, FocusListen
 		setBorder(BorderFactory.createTitledBorder(function.getCaption()));
 
 		if (function.getDescription() != null && !function.getDescription().trim().isEmpty()) {
-			add(new JLabel(function.getDescription()), new GridBagConstraints(0, 0, 0, 1, 1.0, 0.0, // gridx, gridy, gridwidth, gridheight, weightx, weighty
-					GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, // anchor, fill
-					new Insets(2, 2, 2, 2), 2, 2)); // insets, ipadx, ipady
+			customAdd(new JLabel(function.getDescription()), -1, 0, "gridWidth=0 fill=Horizontal");
 		}
 		
 		// Deploy the variables' components
@@ -81,6 +107,7 @@ public class FunctionPanel extends JPanel implements ActionListener, FocusListen
 		
 		final int yOffset = 1; // gridbag layout y coordinate for first variable
 		for (int i = 0; i < variables.length; i++) { // foreach variable. Need the index
+			// Init data
 			FunctionVariable atVariable = variables[i];
 			valuesVariables[i] = atVariable.getInitialDisplayValue();
 			VariableType varType = null; // optional, null if no type specified -> No combo
@@ -93,56 +120,104 @@ public class FunctionPanel extends JPanel implements ActionListener, FocusListen
 						NumberFormat.getNumberInstance(), 1.0, 0.0); // NumberFormat, factor, offset
 			}
 			
-			// Radio button (includes label) for #1 Displaying the variable name and #2 Allowing to select the calculated variable
-			// TT-FUTURE disable for oneway functions
-			JRadioButton rb = new JRadioButton(atVariable.getCaption());
-			rbVariables[i] = rb;
-			rb.setSelected(i == selectedVariable);
-			rb.setEnabled(atVariable.isCalculable());
-			groupVariables.add(rb);
-			rb.setFocusable(false);
-			rb.addActionListener(this);
-			add(rb, new GridBagConstraints(0, i + yOffset, 1, 1, 0.0, 0.0, // gridx, gridy, gridwidth, gridheight, weightx, weighty
-					GridBagConstraints.WEST, GridBagConstraints.NONE, // anchor, fill
-					new Insets(2, 2, 2, 2), 2, 2)); // insets, ipadx, ipady
 			
-			// TextField for displaying/entering variable value
-			JTextField field = new JTextField();
+			JRadioButton rb = createRadioButtonForVariable(atVariable);
+			rbVariables[i] = rb;
+			customAdd(rb, i, 0, "");
+			// selected variable will have radio button selected after loop
+			
+			JTextField field = createTextFieldForVariable(i);
 			fieldsVariables[i] = field;
-			updateFieldTextFromCalcValue(i);
-			field.addActionListener(this);
-			field.addFocusListener(this);
-			field.setHorizontalAlignment(JTextField.RIGHT);
-			field.setEditable(i != selectedVariable);
-			// TT-LOW might not want to modify it, but need to be able to focus if want to copy value
-//			field.setFocusable(i != selectedVariable);
-			add(field, new GridBagConstraints(1, i + yOffset, 1, 1, 1.0, 0.0, // gridx, gridy, gridwidth, gridheight, weightx, weighty
-					GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, // anchor, fill
-					new Insets(2, 2, 2, 2), 2, 2)); // insets, ipadx, ipady
+			customAdd(field, i, 1, "weightx=1");
+			// selected textfield will be disabled after loop
 			
 			// available units (e.g. meters-feet) if a type is specified for the variable
 			if (varType != null) {
-				// TT-LOW behavior for no type, no units, single unit, disabled units ... [52]
-				// Fill in combo choices, and find out the initially selected index.
-				String[] unitChoices = new String[varType.getUnits().length];
-				int iUnitSelected = -1;
-				String unitSelectedName = atVariable.getInitialDisplayUnit();
-				for (int iunit = 0; iunit < unitChoices.length; iunit++) {
-					unitChoices[iunit] = varType.getUnits()[iunit].getCaption();
-					if (varType.getUnits()[iunit].getName().equals(unitSelectedName)) { iUnitSelected = iunit; }
-				}
-				assert iUnitSelected > -1;
-				JComboBox<String> comboUnits = new JComboBox<String>(unitChoices);
+				JComboBox<String> comboUnits = createUnitsComboForVariable(atVariable, varType);
 				combosUnits[i] = comboUnits;
-				comboUnits.setSelectedIndex(iUnitSelected);
-				comboUnits.setEditable(false);
-				comboUnits.addActionListener(this);
-				add(comboUnits, new GridBagConstraints(2, i + yOffset, 1, 1, 0.0, 0.0, // gridx, gridy, gridwidth, gridheight, weightx, weighty
-						GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, // anchor, fill
-						new Insets(2, 2, 2, 2), 2, 2)); // insets, ipadx, ipady
+				customAdd(comboUnits, i, 2, "");
 			}
 		} // foreach variable
+		// Apply custom behavior to selected variable
+		rbVariables[selectedVariable].setSelected(true);
+		fieldsVariables[selectedVariable].setEditable(false);
+
 		// TT-LOW variable values textfields could have consecutive tab indices, so they would be navigated more conveniently with keyboard
+	}
+
+	private JRadioButton createRadioButtonForVariable(
+			FunctionVariable variable) {
+		// Radio button (includes label) for #1 Displaying the variable name and #2 Allowing to select the calculated variable
+		// TT-FUTURE disable for oneway functions
+		JRadioButton rb = new JRadioButton(variable.getCaption());
+		rb.setEnabled(variable.isCalculable());
+		groupVariables.add(rb);
+		rb.setFocusable(false);
+		rb.addActionListener(this);
+		return rb;
+	}
+	
+	private JTextField createTextFieldForVariable(int variableIndex) {
+		JTextField field = new JTextField();
+		double fieldValue = unitsSelected[variableIndex].valueFromCore(valuesVariables[variableIndex]);
+		String fieldText = unitsSelected[variableIndex].format(fieldValue);
+		field.setText(fieldText);
+
+		field.addActionListener(this);
+		field.addFocusListener(this);
+		field.setHorizontalAlignment(JTextField.RIGHT);
+		return field;
+	}
+
+	private JComboBox<String> createUnitsComboForVariable(
+			FunctionVariable atVariable, VariableType varType) {
+		// TT-LOW behavior for no type, no units, single unit, disabled units ... [52]
+		// Fill in combo choices, and find out the initially selected index.
+		String[] unitChoices = new String[varType.getUnits().length];
+		int iUnitSelected = -1;
+		String unitSelectedName = atVariable.getInitialDisplayUnit();
+		for (int iunit = 0; iunit < unitChoices.length; iunit++) {
+			unitChoices[iunit] = varType.getUnits()[iunit].getCaption();
+			if (varType.getUnits()[iunit].getName().equals(unitSelectedName)) { iUnitSelected = iunit; }
+		}
+		assert iUnitSelected > -1;
+		JComboBox<String> comboUnits = new JComboBox<String>(unitChoices);
+		comboUnits.setSelectedIndex(iUnitSelected);
+		comboUnits.setEditable(false);
+		comboUnits.addActionListener(this);
+		return comboUnits;
+	}
+
+	private Insets custom_insets = new Insets(2,2,2,2);
+	/**
+	 * customization for #add(component, constraints) with the repeated and automatizable settings. 
+	 * @param comp
+	 */
+	private void customAdd(Component comp, int iVar, int gridx, String custom) {
+		int l_gridWidth = 1;
+		int l_gridHeight = 1;
+		double l_weightx = 0.0;
+		double l_weighty = 0.0;
+		int l_anchor = GridBagConstraints.WEST;
+		int l_fill = GridBagConstraints.HORIZONTAL;
+		Insets l_insets = custom_insets;
+		int l_padx = 2;
+		int l_pady = 2;
+
+		if (custom.contains("weightx=1")) {
+			l_weightx = 1.0;
+		}
+		
+		if (custom.contains("gridWidth=0") ) {
+			l_gridWidth = 0;
+			l_anchor = GridBagConstraints.NORTHWEST;
+		}
+		
+		add(comp, new GridBagConstraints(gridx, iVar + gridy_firstVariable,
+				l_gridWidth, l_gridHeight, l_weightx, l_weighty,
+				l_anchor, l_fill,
+				l_insets, l_padx, l_pady));
+
 	}
 	
 	/**

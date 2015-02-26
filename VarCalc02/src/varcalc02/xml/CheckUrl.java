@@ -12,6 +12,14 @@ import org.w3c.dom.Element;
 import varcalc02.Function;
 import varcalc02.VarCalc02;
 
+/**
+ * Check if an URL contains an xml which is correctly unmarshalled into a function.
+ * Similar to VarCalc02, but without loading UI.
+ * Used to test the content, and the loading mechanism.
+ * @author Javier Aranda (javier-aranda.com)
+ * CC SA BY
+ */
+// TT-LOW Due to similarities, maybe could integrate this testing in VarCalc02 main
 public class CheckUrl {
 
 	/**

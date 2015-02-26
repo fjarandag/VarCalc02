@@ -6,25 +6,15 @@ package varcalc02;
  * CC SA BY
  */
 public class FunctionVariable {
-	/** Internal name (used as key). Should be an adequate file name. */
+	// Fields. Check getter methods documentation for info
 	private String name;
 	// caption
-	/** Text shown at the calculator panel. Might be more descriptive than name. */
 	private String caption;
-	/** Description for function shown at the calculator panel. */
 	private String description;
-	/**
-	 * Variable type.
-	 * E.g. a weight variable, which might be specified in grams, Kg, pounds, ounces, etc.
-	 * Is optional, if not specified the type combo will be empty and disabled.
-	 */
 	private String type;
-	/** Which variable type unit is initially set. */
 	private String initialDisplayUnit;
-	/** Which value is initially assigned. Specified in function units. */
 	// TT-REDESIGN at some stage might other data types than numbers.
 	private double initialDisplayValue;
-	/** Initial value for approximation (Root-finding) methods. */
 	private double initialCalcValue = 1.0;
 	private double maxValue = Double.MAX_VALUE;
 	private double minValue = Double.MIN_VALUE;
@@ -42,6 +32,7 @@ public class FunctionVariable {
 	}
 
 
+	/** Internal name (used as key). Should be an adequate file name. */
 	public String getName() {
 		return name;
 	}
@@ -50,6 +41,7 @@ public class FunctionVariable {
 		this.name = name;
 	}
 
+	/** Text shown at the calculator panel. Might be more descriptive than name. */
 	public String getCaption() {
 		return caption;
 	}
@@ -58,6 +50,7 @@ public class FunctionVariable {
 		this.caption = caption;
 	}
 
+	/** Description for function shown at the calculator panel. */
 	public String getDescription() {
 		return description;
 	}
@@ -66,6 +59,12 @@ public class FunctionVariable {
 		this.description = description;
 	}
 
+	/**
+	 * Variable type.
+	 * E.g. a weight variable, which might be specified in grams, Kg, pounds, ounces, etc.
+	 * Is optional, if not specified the type combo will be empty and disabled.
+	 */
+	// TODO What value for for no assigned type (is null supported? is empty supported? what if type is not declared in owner function?)
 	public String getType() {
 		return type;
 	}
@@ -74,6 +73,8 @@ public class FunctionVariable {
 		this.type = type;
 	}
 
+	/** Which variable type unit is initially set. */
+	// TODO What value for for no assigned type (is null supported? is empty supported? what if type is not declared in owner function?)
 	public String getInitialDisplayUnit() {
 		return initialDisplayUnit;
 	}
@@ -82,6 +83,7 @@ public class FunctionVariable {
 		this.initialDisplayUnit = initialUnit;
 	}
 
+	/** Which value is initially assigned. Specified in function units. */
 	public double getInitialDisplayValue() {
 		return initialDisplayValue;
 	}
@@ -90,7 +92,7 @@ public class FunctionVariable {
 		this.initialDisplayValue = initialValue;
 	}
 
-	
+	/** Initial value for approximation (Root-finding) methods. */
 	public double getInitialCalcValue() {
 		return initialCalcValue;
 	}
@@ -185,6 +187,16 @@ public class FunctionVariable {
 		return true;
 	}
 
+	/**
+	 * Factory method for a variable instance with basic settings.
+	 * @param name Identification name. Used for caption too.
+	 * @param description longer description
+	 * @param defValue Value initially displayed, and initial value for calculating approximations.
+	 * @param varType name of the variable type. The type must be declared in the owner function.
+	 * @param defUnit name of the default unit within type.
+	 * @return
+	 */
+	// TODO What if type or unit is not available? What if value is null/blank/not-matching ?
 	public static FunctionVariable createVariable(String name, String description, double defValue, String varType, String defUnit) {
 			FunctionVariable newVariable = new FunctionVariable();
 			newVariable.setName(name);

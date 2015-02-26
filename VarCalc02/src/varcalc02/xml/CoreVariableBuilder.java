@@ -9,8 +9,14 @@ import org.w3c.dom.Element;
 import varcalc02.FunctionVariable;
 import varcalc02.VarCalc02;
 
+/**
+ * Builder for the variables objects within a function.
+ * @author Javier Aranda (javier-aranda.com)
+ * CC SA BY
+ */
+// TT-LOW Provide some specification for variable properties
 public class CoreVariableBuilder extends SimpleBuilder<FunctionVariable> {
-
+	// Canonic instance to be registered.
 	private static CoreVariableBuilder s_instance = new CoreVariableBuilder();
 	public static CoreVariableBuilder instance(String builderName) {
 		// TT-LOW
