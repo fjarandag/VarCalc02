@@ -1,0 +1,60 @@
+/* fjarandag@gmail.com 2015w26 */
+.irr-container {position:static;}
+.irr-instructions {padding:5pt;background:#ffa;}
+
+/* Calculator decoration */
+.irr-calc {border:1pt solid black;}
+
+.row-pral { background: hsl(60,0%,90%);}
+.row-sp0 { background: hsl(45,100%,90%);}
+.row-sp1 { background: hsl(45,100%,80%);}
+.row-pp0 { background: hsl(180,100%,90%);}
+.row-pp1 { background: hsl(180,100%,80%);}
+.row-buttons { background: hsl(60,0%,90%);}
+
+/*
+.row-pral *, .row-sp0 *, .row-sp1 *,
+	.row-pp0 *, .row-pp1 * {background:inherit;}
+*/
+
+/* Calculator layout and spacing */
+
+/*
+.irr-calc {display:table;}
+.row-pral, .row-sp0, .row-sp1, .row-pp0, .row-pp1 { display:table-row;}
+.item-title, .field0, .field1 {display:table-cell;}
+.item-title {width:90pt;}
+*/
+/* .irr-calc {width:48em;position:static;} */
+.irr-calc, .irr-instructions, .irr-license {max-width:40em;min-width:20em;padding:0.2em;
+	display:block;position:static;}
+
+/* */
+.row-pral, .row-sp0, .row-sp1,.row-pp0, .row-pp1 {display:block; position:relative; left:0em; top:0em; min-height:1.4em;} /* clear:left;float:left; min-height:1.4em;*/
+.row-height2 {height: 2.8em !important; }
+.row-buttons {}
+
+.item-title { width:7em; height:1.2em; position:relative; display:block;left:0em;top:0em;} /* clear:left;float:left; */
+.item-add {}/* clear:left;float:left; */
+.item-fields {max-width:32em; display:block; position:absolute; left:8em;top:0em;} /* float:left; */
+
+.item-fields .field0 {position:absolute; left:0em;} /* float:left;clear:left; */
+.item-fields .field1 {position:absolute; left:16em;} /* float:left; */
+.item-fields .field2 {position:absolute; left:0em; top:1.4em;} /* float:left; */
+.item-fields .field3 {position:absolute; left:16em; top:1.4em;} /* float:left; */
+.item-fields .field0, .item-fields .field1,
+.item-fields .field2, .item-fields .field3 {display:block; width:16em;} /* margin:0.2em;margin-left:0.5em; */
+.irr-calc label { display:inline-block; width:8.5em; }
+.item-fields input[type=text],
+.item-fields input[type=number]{width:6em;display:inline-block;}
+
+/* Text formatting */
+.fieldNumber {text-align:right;}
+
+.irr-calc * {vertical-align:top;}
+
+
+
+.irr-expandable {display:none;}
+
+

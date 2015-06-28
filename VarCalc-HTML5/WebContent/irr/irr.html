@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- fjarandag@gmail.com 2015w26
+Published under Creative Commons License http://creativecommons.org/licenses/by-sa/3.0/
+-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>IRR calculator</title>
+
+    <link type="text/css" href="irr.css" rel="stylesheet">
+
+</head>
+
+<body>
+<div class="irr-container">
+<!--
+-->
+	<h3>Multi-way Internal Rate of Return calculator</h3>
+	<div class="irr-instructions" id="instructions01">
+	<strong>Instructions</strong>
+	<span class="irr-expand-link"><a href="javascript:expand('instructions01')">[expand]</a></span>
+	<div class="irr-expandable"><ul style="margin:0px inherit;">
+		<li>This calculator allows to represent and calculate a financial scenario with a current value, a rate of return, and as many single payments and periodic payments as desired</li>
+		<li>Use the radio buttons to select which variable you need to calculate</li>
+		<li>Enter the values for the other variables, and press ENTER (or "calculate" button) for the target to be calculated</li>
+		<li>Press "add" under "Single Payment" and "Periodic Payment" to add more payments to the scenario</li>
+		<li>Press "reset" if you need to restore the calculator to its initial state. Refreshing the page might work just as well</li>
+		<li>Notice that in some cases (no possible solutions, or even programmers' idiocy) the calculation might fail. Please be gentle and check your input data.</li>
+		<li>Notice that in some cases there might be multiple solutions (e.g. the IRR if there are strong negative cash flows at some point).
+                    You can enter a target value estimate (or any value) so it is used as a start value for the approximation algorithm.</li>
+		<li>Notice that your data is not saved, and there might be incompatible scenarios. You might be using an spreadsheet as well.</li>
+		<li>Although this is tested to some extent. There is no guarantee that the results are accurate. USE AT YOUR OWN RISK.</li>
+	</ul></div>
+	</div>
+	<form id="calculator01" class="irr-calc" action="javascript:doCalculate('calculator01')">
+	
+	  <div class="row-pral" >
+	  <div class="item-title">Principal</div>
+	  <div class="item-fields">
+	  	<div class="field0">
+	      <input type="radio" name="target" value="P" checked />
+		  <label for="P">Present Value:</label>
+		  <input name="P" type="number" class="fieldNumber" value="0" pattern="-?\d+(\.\d*)?" step="any"/>
+		</div>
+	    <div class="field1">
+	      <input type="radio" name="target" value="r" />
+	      <label for="r">IRR:</label>
+	      <input type="number" name="r" class="fieldNumber" value="2.5" pattern="-?\d+(\.\d*)?" min="0" step="any"/>
+	    </div>	
+	  </div>
+	  </div>
+
+	<div class="row-sp0" >
+		<div class="item-title">Single&nbsp;Payment</div>
+		<div class="item-fields">
+			<div class="field0">
+	<input type="radio" name="target" value="sp0" />
+	<label for="sp0">Quantity:</label>
+	<input name="sp0" type="number" class="fieldNumber" value="0" pattern="(-)?\d+(\.\d*)?" step="any"/>
+			</div>
+			<div class="field1">
+	<input type="radio" name="target" value="tsp0" />
+	<label for="tsp0">At time (years):</label>
+	<input name="tsp0" type="number" class="fieldNumber" value="0" pattern="(-)?\d+(\.\d*)?" step="any" />
+			</div>
+		</div>
+	</div>
+
+	<div class="row-sp1 row-addSP" >
+		<div class="item-add"><a href="javascript:addSinglePayment('calculator01')">add</a></div>
+	</div>
+
+	<div class="row-pp0 row-height2" >
+		<div class="item-title">Periodic&nbsp;Payment</div>
+		<div class="item-fields">
+			<div class="field0">
+	<input type="radio" name="target" value="pp0" />
+	<label for="pp0">Periodic quantity:</label>
+	<input name="pp0" type="number" class="fieldNumber" value="0" pattern="(-)?\d+(\.\d*)?" step="any"/>
+			</div>
+			<div class="field1">
+	<input type="radio" name="target" value="tpp0" />
+	<label for="tpp0">Start time (years):</label>
+	<input name="tpp0" type="number" class="fieldNumber" value="0" pattern="(-)?\d+(\.\d*)?" step="any" />
+			</div>
+			<div class="field2">
+	<input type="radio" name="target" value="fpp0" />
+	<label for="fpp0">Payments per year:</label>
+	<input name="fpp0" type="number" class="fieldNumber" value="12" pattern="\d+(\.\d*)?" step="any" />
+			</div>
+			<div class="field3">
+	<input type="radio" name="target" value="dpp0" />
+	<label for="dpp0">Duration (years):</label>
+	<input name="dpp0" type="number" class="fieldNumber" value="1" pattern="\d+(\.\d*)?" step="any" />
+			</div>
+		</div>
+	</div>
+	<div class="row-pp1 row-addPP" >
+		<div class="item-add"><a href="javascript:addPeriodicPayment('calculator01')">add</a></div>
+	</div>
+
+	<div class="row-buttons">
+	  <button type="submit" style="margin-left:20pt;">Calculate</button>
+	  <button type="reset" style="margin-left:20pt;" onclick="resetPayments('calculator01');">Reset</button>
+	</div>
+
+
+	</form>
+
+	<div id="license01" class="irr-license" style="margin-top:1em;">
+	<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a>
+	<span class="irr-expand-link"><a href="javascript:expand('license01')">[expand]</a></span>
+	<div class="irr-expandable">
+	<b>CC&nbsp;BY&nbsp;SA&nbsp;-&nbsp;Javier&nbsp;Aranda&nbsp;-&nbsp;2015:</b> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+	<ul style="margin-top:0;margin-bottom:0">
+            <li>Banco de Espa&ntilde;a employed me for developing a mortgage calculator. The source code is independent, but the problem is similar.</li>
+            <li>I learned some Finantial Maths with prof.<a href="https://www.linkedin.com/pub/javier-miner/0/227/a84">Javier Miner</a> (Deusto)</li>
+            <li>I learned some Computer Calculus with prof.<a href="www.frasesdeprofes.com/simeon_gutierrez-p5977.htm">Sime&oacute;n Guti&eacute;rrez</a>, who called my practice work a &quot;parish newsletter&quot; :)</li>
+            <li>I learned some Web design and stuff from <a href="https://www.linkedin.com/pub/raul-calvo-pe%C3%B3n/32/b3a/95">Raul Calvo</a>(IECISA/BdE), and the designer at Getronics/BBVA whose name i can't remember :(</li>
+            <li>This work uses mainstream open technologies from foundations which are already well known, such as
+                <a href="http://www.w3c.org"> W3C</a>, 
+                <a href="http://www.apache.org/">ASF</a>, 
+                <a href="https://www.mozilla.org/">Mozilla</a>,
+                <a href="https://jquery.org/">jQuery</a> ...
+                and reference providers such as 
+                <a href="https://www.google.es/intl/en/about/">Google</a>, 
+                <a href="https://www.mediawiki.org/wiki/MediaWiki">MediaWiki</a>,
+                <a href="http://stackoverflow.com/">StackOverflow</a> and 
+                <a href="http://www.w3schools.com/">W3Schools</a></li>
+            <li>And last but not least: Thanks dad for all these years of unconditional support</li>
+	</ul></div>
+	</div>
+
+</div> <!-- / irr-container -->
+
+<!-- Scripts after content, so user is not staring a blank page. -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"> </script>
+
+<script src="irr.js" type="text/javascript" charset="utf-8"> </script>
+
+</body>
+</html>

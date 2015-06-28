@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- fjarandag@gmail.com 2015w24 -->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Mortgage calculator</title>
+</head>
+<style>
+.container {}
+.instructions {padding:5pt;background:#ffa;}
+.calculator {border:1pt solid black; max-witdh:250pt;display:inline-block;}
+.calculator label { display:inline-block; width:120pt; }
+.calculator .row0 { background: white; }
+.calculator .row1 { background: #eee; }
+.calculator .fieldNumber {width: 80pt; text-align:right;}
+
+.expandable {display:none;}
+
+</style>
+
+<body><div class="container">
+	<h3>Multi-way Mortgage calculator</h3>
+	<div class="instructions" id="instructions01">
+	<strong>Instructions</strong>
+	<span class="expand-link"><a href="javascript:expand('instructions01')">[expand]</a></span>
+	<div class="expandable"><ul style="margin:0px inherit;">
+		<li>This calculator uses the <a href="https://en.wikipedia.org/wiki/Mortgage_calculator">mortgage formula</a> for finding out the payments, interest rate, etc. 
+		so users can estimate how much can they afford, and compare the interest of different offers.</li>
+		<li>Select with the radio button which variable (payment, rate, etc) you want to calculate</li>
+		<li>Enter the values in the other fields, then press "Calculate" button</li>
+		<li>Actual mortgages might include extra expenses (contracting fees discounted from the principal, excess of insurance to be added to payments), which might be adequate to take into account to compare effective interest rates).</li>
+		<li>If interest rates change at any point, or want to renegotiate duration or payments, the remaining principal at a given point might be calculated entering the remaining duration.</li>
+		<li>Calculation might fail if no possible solution exist (e.g. if calculating duration where the payment does not cover the interests). If you have doubts about some input might select it as target and check it with sample results (e.g. what payment for 999 years).</li>
+		<li>Might press the reset button to set back the initial sample values</li>
+	</ul></div>
+	</div>
+
+	<form id="calculator01" class="calculator" action="javascript:doCalculate('calculator01','mortgageFormula')">
+	(Loading ...)
+	</form>
+	
+	<div id="license01" class="about" style="margin-top:1em;">
+	<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><span class="expand-link">
+	<a href="javascript:expand('license01')">[expand]</a></span>
+	<div class="expandable">
+	<b>CC&nbsp;BY&nbsp;SA&nbsp;-&nbsp;Javier&nbsp;Aranda&nbsp;-&nbsp;2015:</b> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+	<ul style="margin-top:0;margin-bottom:0">
+		<li>The author formerly programmed the algorithmic code for the calculator (Simulador Financiero) for <a href="http://www.bde.es/clientebanca/simuladores/simulador_hipotecario.htm">Portal del Cliente Bancario de Banco de España</a> (circa 2007. Older Javascript version is currently superseded by a Flash one).</li>
+		<li>This redeveloped (from scratch) version shares the principle of using the Newton-Raphson algorithm for <a href="https://en.wikipedia.org/wiki/Root-finding_algorithm">root finding</a></li>
+		<li>The main difference is the capability to select which variable is going to be calculated. There are other minor differences which can be checked out in the source code.</li>
+		<li>This Javascript version is based on <a href="http://javier-aranda.com/VarCalc02/">VarCalc02</a> (a Java/Swing implementation, harder to execute, and with other objectives in mind).</li>
+	</ul></div>
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Scripts after content, so user is not staring a blank page. -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"> </script>
+<script src="./calculator.js" type="text/javascript"> </script>
+<script><!--
+var mortgageFormula = {
+	name:'mortgage', // @@ Not used
+	// #[mortgage-formula] @@@ Should provide a link with centralized documentation
+	// The rate calculated is instantaneous/continous (r_i), such that (1+r_period)^n = e^(n*r_i). Less intuitive but more efficient.
+	// if r != 0 then (P * (Math.exp(r) - 1) / (1 - Math.exp(r * -N))) - c == 0
+	// else (iff r == 0) P / N - c == 0
+	// Although a proper derivation of the formula is possible (d f(r) / d r ), I find more convenient to get the slope for a given r from the difference with a close value: ( f(r+epsilon) - f(r) ) / epsilon
+	expression:'r == 0.0? P / N - c : P * (Math.exp(r)-1.0) / (1 - Math.exp(r * -N)) - c',
+	variables:{
+		P:{caption:'Principal', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+				defValue:150000, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+		N:{caption:'Duration (years)', read:'parseFloat(%1) * 12',write:'(%1 / 12.0).toFixed(2)',
+				defValue:15, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+		r:{caption:'Rate (APR)', read:'Math.log(1.0 + parseFloat(%1)/100.0)/12.0',
+				write:'( (Math.exp(%1*12.0) - 1.0) * 100 ).toFixed(3)',
+				defValue:2.5, htmlAttributes:'pattern="\\d+(\\.\\d*)?" min="0" step="any"'},
+		c:{caption:'Monthly payment', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+				defValue:1000 , htmlAttributes:'min="0.01" pattern="\\d+(\\.\\d*)?" step="any"'},
+	},
+	checked:'r',
+};
+
+$(document).ready(function(){
+	generateCalculator('calculator01', 'mortgageFormula');
+});
+--></script>
+
+</body>
+</html>
