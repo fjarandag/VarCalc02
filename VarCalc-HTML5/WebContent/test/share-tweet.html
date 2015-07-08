@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- fjarandag@gmail.com 2015w27
+Published under Creative Commons License http://creativecommons.org/licenses/by-sa/3.0/
+-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Test-Facebook</title>
+
+</head>
+
+<body>
+
+<!--
+@Discuss
+ El mecanismo de compartir tal y como sugiere Tweeter (https://dev.twitter.com/web/tweet-button)
+* Me parece algo mejor que el mecanismo de facebook: Se renderizará un enlace aunque falle el script
+* Problemas
+  * (fb) Está pidiendo la carga y proceso de recursos adicionales que pueden afectar al rendimiento de la página
+  * (fb) Los recursos externos pueden tener comportamientos indeseados por el cliente
+    * Carga de cookies no deseadas
+    * Riesgo de que el script sea pirateado por un tercero
+* Alternativas
+  * En Microsiervos contienen las imágenes específicas, no cargan scripts que no se van a utilizar.
+    * Quizás sería problemático si Facebook o Twitter decide cambiar la interfaz de compartir.
+-->
+
+<h3>Sample Page</h3>
+Content of sample page<br>
+
+<a class="twitter-share-button"
+  href="https://twitter.com/intent/tweet?text=IRR%20Calculator" data-count="none">
+Tweet</a>
+
+<!-- Scripts before end -->
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+ 
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+ 
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+</body>
+</html>

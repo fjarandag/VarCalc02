@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- fjarandag@gmail.com 2015w27
+Published under Creative Commons License http://creativecommons.org/licenses/by-sa/3.0/
+-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Test-Facebook</title>
+
+<meta property="og:url"                content="http://javier-aranda.com/devel/calc/test/share-fb.html" />
+<!-- 
+ -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Enhanced IRR Calculator" />
+<meta property="og:site_name" content="Javier Aranda" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:description" content="Enhanced Internal Interest Rate calculator allowing finding any variable. Supports periodic payments" />
+<meta property="og:image" content="http://javier-aranda.com/devel/calc/images/sample-irr-1200x630.png" />
+<!-- FB started showing the image when included size
+Size might affect result. https://developers.facebook.com/docs/sharing/best-practices#images
+minimum 200x200, small 600x315, recommended > 1200x630
+sample-irr-fb 706x316
+ -->
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+</head>
+
+<body>
+
+<!--
+@Discuss
+ El mecanismo de compartir tal y como sugiere Facebook (https://developers.facebook.com/docs/plugins/share-button)
+* Problemas
+  * Está pidiendo la carga y proceso de recursos adicionales que pueden afectar al rendimiento de la página
+  * Los recursos externos pueden tener comportamientos indeseados por el cliente
+    * Carga de cookies no deseadas
+    * Riesgo de que el script sea pirateado por un tercero
+  * No se muestra correctamente en local.
+* Alternativas
+  * En Microsiervos contienen las imágenes específicas, no cargan el sdk de facebook (u otros), y apuntan directamente a la dirección de compartir
+    * Quizás sería problemático si Facebook o Twitter decide cambiar la interfaz de compartir.
+-->
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<h3>Sample Page</h3>
+Content of sample page<br>
+
+<div class="fb-share-button" data-href="http://javier-aranda.com/test/test-fb.html" data-layout="button"></div>
+
+</body>
+</html>
