@@ -26,8 +26,8 @@
 .item-title {width:90pt;}
 */
 /* .irr-calc {width:48em;position:static;} */
-.irr-calc, .irr-instructions, .irr-license {max-width:40em;min-width:20em;padding:0.2em;
-	display:block;position:static;}
+.irr-calc, .irr-instructions, .irr-license {max-width:40em;min-width:20em;
+	padding:0.2em; margin:0.2em inherit;display:block;position:static;}
 
 /* */
 .row-pral, .row-sp0, .row-sp1,.row-pp0, .row-pp1 {display:block; position:relative; left:0em; top:0em; min-height:1.4em;} /* clear:left;float:left; min-height:1.4em;*/

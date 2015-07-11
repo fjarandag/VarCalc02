@@ -1,7 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- fjarandag@gmail.com 2015w26
-Published under Creative Commons License http://creativecommons.org/licenses/by-sa/3.0/
+<!-- fjarandag@gmail.com 2015w28
+IRR Calculator: Calculates Rate of Return, or any other variable, for an arbitrary number of flows.
+Copyright (c) 2015 Javier Aranda (http://javier-aranda.com/).
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -9,6 +23,16 @@ Published under Creative Commons License http://creativecommons.org/licenses/by-
     <title>IRR calculator</title>
 
     <link type="text/css" href="irr.css" rel="stylesheet">
+
+	<meta property="og:url" content="http://javier-aranda.com/calc/irr.html" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Enhanced IRR Calculator" />
+	<meta property="og:site_name" content="Javier Aranda" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:description" content="Enhanced Rate of Return calculator allowing to find any variable. Supports periodic payments." />
+	<meta property="og:image" content="http://javier-aranda.com/images/sample-irr-1200x630.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
 
 </head>
 
@@ -104,32 +128,36 @@ Published under Creative Commons License http://creativecommons.org/licenses/by-
 	  <button type="submit" style="margin-left:20pt;">Calculate</button>
 	  <button type="reset" style="margin-left:20pt;" onclick="resetPayments('calculator01');">Reset</button>
 	</div>
-
-
 	</form>
 
-	<div id="license01" class="irr-license" style="margin-top:1em;">
-	<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a>
+	<div class="share-post" style="margin:.5em inherit;">
+		<a href="http://www.facebook.com/sharer.php?u=http://javier-aranda.com/calc/irr.html" target="_blank"><img src="../images/share-fb.png" height="22" width="57" border="0" alt="Share@Facebook" title="Share@Facebook" /></a>
+		&nbsp;
+		<a href="https://twitter.com/intent/tweet?text=Enhanced%20IRR%20Calculator%20http://javier-aranda.com/calc/irr.html" target="_blank"><img src="../images/share-tweet.png" height="22" width="58" border="0" alt="Tweet" title="Tweet" /></a>
+	</div>
+
+	<div id="license01" class="irr-license">
+	<a rel="license" href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html" target="_blank"><img alt="GPLv2 License" style="border-width:0;vertical-align:middle;" src="../images/license-gpl.png" /></a>
+	<strong>About</strong>
 	<span class="irr-expand-link"><a href="javascript:expand('license01')">[expand]</a></span>
 	<div class="irr-expandable">
-	<b>CC&nbsp;BY&nbsp;SA&nbsp;-&nbsp;Javier&nbsp;Aranda&nbsp;-&nbsp;2015:</b> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+	<strong>IRR Calculator:</strong> Calculates Rate of Return, or any other variable, for an arbitrary number of flows.<br>
+	Copyright (c) 2015 Javier Aranda.<br>
+	This development is free software. You can copy or modify it under the terms of the <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;version&nbsp;2</a><sup>[1]</sup>.<br>
+	Source code might be retrieved from <a href="https://github.com/fjarandag/VarCalc02" target="_blank">https://github.com/fjarandag/VarCalc02</a><br>
+	
+	Regarding this work I would like to thank the following:
 	<ul style="margin-top:0;margin-bottom:0">
-            <li>Banco de Espa&ntilde;a employed me for developing a mortgage calculator. The source code is independent, but the problem is similar.</li>
-            <li>I learned some Finantial Maths with prof.<a href="https://www.linkedin.com/pub/javier-miner/0/227/a84">Javier Miner</a> (Deusto)</li>
-            <li>I learned some Computer Calculus with prof.<a href="www.frasesdeprofes.com/simeon_gutierrez-p5977.htm">Sime&oacute;n Guti&eacute;rrez</a>, who called my practice work a &quot;parish newsletter&quot; :)</li>
-            <li>I learned some Web design and stuff from <a href="https://www.linkedin.com/pub/raul-calvo-pe%C3%B3n/32/b3a/95">Raul Calvo</a>(IECISA/BdE), and the designer at Getronics/BBVA whose name i can't remember :(</li>
-            <li>This work uses mainstream open technologies from foundations which are already well known, such as
-                <a href="http://www.w3c.org"> W3C</a>, 
-                <a href="http://www.apache.org/">ASF</a>, 
-                <a href="https://www.mozilla.org/">Mozilla</a>,
-                <a href="https://jquery.org/">jQuery</a> ...
-                and reference providers such as 
-                <a href="https://www.google.es/intl/en/about/">Google</a>, 
-                <a href="https://www.mediawiki.org/wiki/MediaWiki">MediaWiki</a>,
-                <a href="http://stackoverflow.com/">StackOverflow</a> and 
-                <a href="http://www.w3schools.com/">W3Schools</a></li>
-            <li>And last but not least: Thanks dad for all these years of unconditional support</li>
-	</ul></div>
+            <li><a href="http://www.bde.es" target="_blank">Banco de Espa&ntilde;a</a> employed me for developing a mortgage calculator. The source code is independent, but the problem is similar.</li>
+            <li>I learned some Financial Maths with prof.<a href="https://www.linkedin.com/pub/javier-miner/0/227/a84" target="_blank">Javier Miner</a> (Deusto), who was an awesome teacher.</li>
+            <li>I learned some Computer Calculus with prof.Sime&oacute;n Guti&eacute;rrez, which I did not enjoy so much.</li>
+            <li>I learned some stuff like Web design from <a href="https://www.linkedin.com/pub/raul-calvo-pe%C3%B3n/32/b3a/95" target="_blank">Ra&uacute;l Calvo</a>, and other co-workers whose names I hardly can remember.</li>
+            <li>I would also like to thank all the software community who have contributed to open technologies and tools which have made this work feasible.</li>
+            <li>And thanks dad for all these years of unconditional support.</li>
+	</ul>
+	<sup>[1]</sup>If you need specific permission for other terms, please do ask.<br>
+	
+	</div>
 	</div>
 
 </div> <!-- / irr-container -->
