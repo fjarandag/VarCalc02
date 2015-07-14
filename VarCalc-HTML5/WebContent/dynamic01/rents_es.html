@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<!-- fjarandag@gmail.com 2015w29
+Rents Calculators. Prototype of dynamic multi-directional calculator by Javier Aranda.
+Dynamic: Formula/Equation specified at runtime. Multi-directional: Many of the variables are selectable as target.
+Copyright (c) 2015 Javier Aranda (http://javier-aranda.com/).
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Calculadoras Rentas</title>
+<!--     
+	<meta property="og:url" content="http://javier-aranda.com/calc/mortgage.html" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Enhanced Mortgage Calculator" />
+	<meta property="og:site_name" content="Javier Aranda" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:description" content="Prototype for dynamic (formula at runtime) and multi-direction(target any variable) calculator" />
+	<meta property="og:image" content="http://javier-aranda.com/images/sample-mortgage.png" />
+	<meta property="og:image:width" content="321" />
+	<meta property="og:image:height" content="270" />
+ -->
+</head>
+<style>
+.container {}
+.instructions {padding:5pt;background:#ffa;}
+.calculator {border:1pt solid black; max-witdh:250pt;display:inline-block;}
+.calculator label { display:inline-block; width:120pt; }
+.calculator .row0 { background: white; }
+.calculator .row1 { background: #eee; }
+.calculator .fieldNumber {width: 80pt; text-align:right;}
+
+.expandable {display:none;}
+
+</style>
+
+<body><div class="container">
+	<h3>Calculadoras multi-sentido de rentas financieras</h3>
+	<div class="instructions" id="instructions01">
+	<strong>Instructions</strong>
+	<span class="expand-link"><a href="javascript:expand('instructions01')">[expand]</a></span>
+	<div class="expandable">
+	@@@ Contenido
+	</div>
+	</div>
+
+	<h5>Renta Constante Finita</h5>
+	<form id="calc-cte-finita0" class="calculator" action="javascript:doCalculate('calc-cte-finita0','rentCteFin0')">
+	(Cargando con Javascript ...)
+	</form>
+
+	<form id="calc-cte-finitaF" class="calculator" action="javascript:doCalculate('calc-cte-finitaF','rentCteFinF')">
+	(Cargando con Javascript  ...)
+	</form>
+
+	<h5>Renta Constante Indefinida</h5>
+	<form id="calc-cte-indefinida" class="calculator" action="javascript:doCalculate('calc-cte-indefinida','rentCteIndef')">
+	(Cargando con Javascript  ...)
+	</form>
+	
+	<h5>Renta Geom&eacute;trica Finita</h5>
+	<form id="calc-geom-finita0" class="calculator" action="javascript:doCalculate('calc-geom-finita0','rentGeomFin0')">
+	(Cargando con Javascript  ...)
+	</form>
+
+	<form id="calc-geom-finitaF" class="calculator" action="javascript:doCalculate('calc-geom-finitaF','rentGeomFinF')">
+	(Cargando con Javascript  ...)
+	</form>
+	
+	<h5>Renta Geom&eacute;trica Indefinida</h5>
+	<form id="calc-gem-indefinida" class="calculator" action="javascript:doCalculate('calc-gem-indefinida','rentGeomIndef')">
+	(Cargando con Javascript  ...)
+	</form>
+	
+	<div class="share-post" style="margin:.5em inherit;">
+		<a href="http://www.facebook.com/sharer.php?u=http://javier-aranda.com/calc/rents_es.html" target="_blank"><img src="../images/share-fb.png" height="22" width="57" border="0" alt="Share@Facebook" title="Share@Facebook" /></a>
+		&nbsp;
+		<a href="https://twitter.com/intent/tweet?text=Rents%20Calculators%20http://javier-aranda.com/calc/rents_es.html" target="_blank"><img src="../images/share-tweet.png" height="22" width="58" border="0" alt="Tweet" title="Tweet" /></a>
+	</div>
+	<div id="license01" class="about">
+	<a rel="license" href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html" target="_blank"><img alt="GPLv2 License" style="border-width:0;vertical-align:middle;" src="../images/license-gpl.png" /></a>
+	<strong>About</strong>
+	<span class="expand-link"><a href="javascript:expand('license01')">[expand]</a></span>
+	<div class="expandable">
+	<strong>Rents Calculator:</strong> Calculates Interest Rate, or any other variable, for different rent formulas.<br>
+	Copyright (c) 2015 Javier Aranda.<br>
+	This development is free software. You can copy or modify it under the terms of the <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;version&nbsp;2</a><sup>[1]</sup>.<br>
+	Source code might be retrieved from <a href="https://github.com/fjarandag/VarCalc02" target="_blank">https://github.com/fjarandag/VarCalc02</a><br>
+	<ul style="margin-top:0;margin-bottom:0">
+		<li>The author formerly programmed the algorithmic code for the calculator (Simulador Financiero) for <a href="http://www.bde.es/clientebanca/simuladores/simulador_hipotecario.htm">Portal del Cliente Bancario de Banco de España</a> (circa 2007. Older Javascript version is currently superseded by a Flash one).</li>
+		<li>This redeveloped (from scratch) version shares the principle of using the Newton-Raphson algorithm for <a href="https://en.wikipedia.org/wiki/Root-finding_algorithm">root finding</a></li>
+		<li>The main difference is the capability to select which variable is going to be calculated. There are other minor differences which can be checked out in the source code.</li>
+		<li>This Javascript version is based on <a href="http://javier-aranda.com/VarCalc02/">VarCalc02</a> (a Java/Swing implementation, harder to execute, and with other objectives in mind).</li>
+	</ul>
+	<sup>[1]</sup>If you need specific permission for other terms, please do ask.<br>
+	</div>
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Scripts after content, so user is not staring a blank page. -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"> </script>
+
+<script src="./calculator.js" type="text/javascript"> </script>
+
+<script><!--
+// Similar as mortgage formula in mortgage.html
+var rentCteFin0 = {
+	expression:'r == 0.0? P / N - c : P * (Math.exp(r)-1.0) / (1 - Math.exp(r * -N)) - c',
+	variables:{
+		P:{caption:'Principal', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+				defValue:150000, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+		N:{caption:'Duraci&oacute;n', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+				defValue:15, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+		r:{caption:'Inter&eacute;s (%)', read:'Math.log(1.0 + parseFloat(%1)/100.0)',
+				write:'( (Math.exp(%1) - 1.0) * 100 ).toFixed(3)',
+				defValue:2.5, htmlAttributes:'pattern="\\d+(\\.\\d*)?" min="0" step="any"'},
+		c:{caption:'Pago peri&oacute;dico', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+				defValue:12000 , htmlAttributes:'min="0.01" pattern="\\d+(\\.\\d*)?" step="any"'},
+	},
+	checked:'r',
+};
+// Checked to match original formulas
+var rentCteFinF = {
+	expression:'r == 0.0? c * N - Vf : c * (Math.pow(1+r,N)-1) / r - Vf',
+	variables:{
+		Vf:{caption:'Valor Final', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+				defValue:215000, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+		N:{caption:'Duraci&oacute;n', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+				defValue:15, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+		r:{caption:'Inter&eacute;s (%)', read:'parseFloat(%1)/100.0',
+				write:'( %1 * 100 ).toFixed(3)',
+				defValue:2.5, htmlAttributes:'pattern="\\d+(\\.\\d*)?" min="0" step="any"'},
+		c:{caption:'Pago peri&oacute;dico', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+				defValue:12000 , htmlAttributes:'min="0.01" pattern="\\d+(\\.\\d*)?" step="any"'},
+	},
+	checked:'r',
+};
+ 
+var rentCteIndef = {
+		expression:'c / r - P',
+		variables:{
+			P:{caption:'Principal', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+					defValue:480000, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+			r:{caption:'Inter&eacute;s (%)', read:'parseFloat(%1)/100.0',
+					write:'( %1 * 100 ).toFixed(3)',
+					defValue:2.5, htmlAttributes:'pattern="\\d+(\\.\\d*)?" min="0.0001" step="any"'},
+			c:{caption:'Pago peri&oacute;dico', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+					defValue:12000 , htmlAttributes:'min="0.01" pattern="\\d+(\\.\\d*)?" step="any"'},
+		},
+		checked:'r',
+};
+ 
+// http://www.matematicas-financieras.com/rentas-variables-en-progresion-geometrica-i-p20.htm
+var rentGeomFin0 = {
+		expression:'q==1+r? c*N/(1+r) - P: c * (Math.pow(1+r,N)-Math.pow(q,N)) / (Math.pow(1+r,N) * (1+r-q)) - P',
+		variables:{
+			P:{caption:'Principal', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+					defValue:170000, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+			N:{caption:'Duraci&oacute;n', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+					defValue:15, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+			r:{caption:'Inter&eacute;s (%)', read:'parseFloat(%1)/100.0',
+					write:'( %1* 100 ).toFixed(3)',
+					defValue:2.5, htmlAttributes:'pattern="\\d+(\\.\\d*)?" min="0" step="any"'},
+			q:{caption:'Ratio actualizaci&oacute;n', read:'parseFloat(%1)',
+				write:'%1.toFixed(3)',
+				defValue:1.02, htmlAttributes:'pattern="\\d+(\\.\\d*)?" min="0.001" step="any"'},
+			c:{caption:'Pago peri&oacute;dico', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+					defValue:12000 , htmlAttributes:'min="0.01" pattern="\\d+(\\.\\d*)?" step="any"'},
+		},
+		checked:'r',
+};
+ 
+var rentGeomFinF = {
+		expression:'q==1+r? c*N/(1+r) - Vf: c * (Math.pow(1+r,N)-Math.pow(q,N)) / (1+r-q) - Vf',
+		variables:{
+			Vf:{caption:'Valor final', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+					defValue:245000, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+			N:{caption:'Duraci&oacute;n', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+					defValue:15, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+			r:{caption:'Inter&eacute;s (%)', read:'parseFloat(%1)/100.0',
+					write:'( %1* 100 ).toFixed(3)',
+					defValue:2.5, htmlAttributes:'pattern="\\d+(\\.\\d*)?" min="0" step="any"'},
+			q:{caption:'Ratio actualizaci&oacute;n', read:'parseFloat(%1)',
+				write:'%1.toFixed(3)',
+				defValue:1.02, htmlAttributes:'pattern="\\d+(\\.\\d*)?" min="0.001" step="any"'},
+			c:{caption:'Pago peri&oacute;dico', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+					defValue:12000 , htmlAttributes:'min="0.01" pattern="\\d+(\\.\\d*)?" step="any"'},
+		},
+		checked:'r',
+};
+
+var rentGeomIndef = {
+		expression:'c / (1+r - q) - P',
+		variables:{
+			P:{caption:'Principal', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+					defValue:2400000, htmlAttributes:'min="1" pattern="\\d+(\\.\\d*)?" step="any"'},
+			r:{caption:'Inter&eacute;s (%)', read:'parseFloat(%1)/100.0',
+					write:'( %1* 100 ).toFixed(3)',
+					defValue:2.5, htmlAttributes:'pattern="\\d+(\\.\\d*)?" min="0" step="any"'},
+			q:{caption:'Ratio actualizaci&oacute;n', read:'parseFloat(%1)',
+				write:'%1.toFixed(3)',
+				defValue:1.02, htmlAttributes:'pattern="\\d+(\\.\\d*)?" min="0.001" step="any"'},
+			c:{caption:'Pago peri&oacute;dico', read:'parseFloat(%1)',write:'%1.toFixed(2)',
+					defValue:12000 , htmlAttributes:'min="0.01" pattern="\\d+(\\.\\d*)?" step="any"'},
+		},
+		checked:'r',
+};
+
+$(document).ready(function(){
+	generateCalculator('calc-cte-finita0', 'rentCteFin0');
+	generateCalculator('calc-cte-finitaF', 'rentCteFinF');
+	generateCalculator('calc-cte-indefinida', 'rentCteIndef');
+	generateCalculator('calc-geom-finita0', 'rentGeomFin0');
+	generateCalculator('calc-geom-finitaF', 'rentGeomFinF');
+	generateCalculator('calc-gem-indefinida', 'rentGeomIndef');
+});
+--></script>
+
+</body>
+</html>
