@@ -1,5 +1,6 @@
 package varcalc02;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -52,6 +53,9 @@ public class NREngine implements SolutionEngine {
 
 			varValues[targetVar] = targetValue = nextValue;
 			stepCount++;
+		}
+		if (VarCalc02.DEBUG) {
+			VarCalc02.log("NR-aproximation result: " + Arrays.toString(varValues));
 		}
 	}
 

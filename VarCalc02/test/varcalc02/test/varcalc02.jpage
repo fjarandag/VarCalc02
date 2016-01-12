@@ -1,0 +1,5 @@
+// Concerns about ScriptEngine
+javax.script.ScriptEngineManager manager = new javax.script.ScriptEngineManager();
+javax.script.ScriptEngine sengine = manager.getEngineByName("JavaScript");
+Object threadingParameter = sengine.getFactory().getParameter("THREADING");
+System.out.println("THREADING="+threadingParameter);

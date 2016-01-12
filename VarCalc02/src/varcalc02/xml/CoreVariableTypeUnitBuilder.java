@@ -8,9 +8,7 @@ import java.util.Set;
 
 import org.w3c.dom.Element;
 
-import varcalc02.FunctionVariable;
 import varcalc02.VarCalc02;
-import varcalc02.VariableType;
 import varcalc02.VariableTypeUnit;
 
 /**
@@ -58,7 +56,7 @@ public class CoreVariableTypeUnitBuilder extends SimpleBuilder<VariableTypeUnit>
 		// factor defaults to 1.0
 		// offset defaults to 0.0
 		
-		HashMap<String, String> l_propertiesCopy = new HashMap(properties);
+		HashMap<String, String> l_propertiesCopy = new HashMap<String,String>(properties);
 		// removing properties, leave just the unreclaimed
 		String l_name = l_propertiesCopy.remove("name");
 		String l_caption = l_propertiesCopy.remove("caption");

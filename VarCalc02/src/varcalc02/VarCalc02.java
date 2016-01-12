@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -61,7 +62,7 @@ public class VarCalc02 {
 			// final here does NOT mean constant
 			final Function l_function;
 			if (strUrl == null) {
-				l_function = createMortgageFunction();
+				l_function = createMortgageScriptFunction();
 			} else {
 				l_function = loadFunctionFromUrl(strUrl);
 			}
@@ -188,9 +189,43 @@ public class VarCalc02 {
 	/**
 	 * Creates the default mortgage function, used for demonstration.
 	 */
-	public static Function createMortgageFunction() {
+	public static Function createMortgageScriptFunction() {
 		// From http://en.wikipedia.org/wiki/Mortgage_calculator
 		// c = r P / (1 - (1+r)^-N)
+		ScriptFunction function = new ScriptFunction();
+		createMortgageFunction_fillCommon(function);
+		function.setScriptLanguage("JavaScript");
+		// formula converted for exponential ratio = Ln(1 + r)
+		// Using expm1 for improved precision
+		// Need to access java Math, as of Nov 2014 expm1 is experimental in javascript
+		//    (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/expm1)
+		function.setScriptCode("r==0.0 ? P / N - c : (P * java.lang.Math.expm1(r) / - java.lang.Math.expm1(r * -N)) - c");
+		// scriptCode also works with multiple statements
+		//function.setScriptCode("if(r==0.0) { P / N - c } else { (P * java.lang.Math.expm1(r) / - java.lang.Math.expm1(r * -N)) - c }");
+
+		return function;
+	}
+	
+	public static Function createMortgageInlineFunction() {
+		Function function = new Function() {			
+			@Override
+			public double calculate(double[] varValues, HashMap<String, Object> context) throws ArithmeticException {
+				double c = varValues[0];
+				double P = varValues[1];
+				double N = varValues[2];
+				double r = varValues[3];
+				if (r == 0.0) { // Exception at r==0. would cause DivBy0
+					return  P / N - c;
+				} else { // General formula
+					return (P * Math.expm1(r) / - Math.expm1(r * -N)) - c;
+				}
+			}
+		};
+		createMortgageFunction_fillCommon(function);
+		return function;
+	}
+
+	private static void createMortgageFunction_fillCommon(Function function) {
 		// TT-REDESIGN might enter actual currencies (e.g. exchange from EUR to legacy currencies with fixed rates), but I see it better as a single unit type sample
 		VariableTypeUnit[] unitsCurrency = {new VariableTypeUnit.Proportional("currency","currency",CURRENCYFORMAT, 1.0, 0.0)};
 		unitsCurrency[0].setCaption("¤");
@@ -215,7 +250,6 @@ public class VarCalc02 {
 		FunctionVariable varDuration = FunctionVariable.createVariable("N", "Duration", 240, "time", "years");
 		FunctionVariable varInterest = FunctionVariable.createVariable("r", "Interest rate", 0.0001, "interest", "apr");
 		
-		ScriptFunction function = new ScriptFunction();
 		function.setName("Mortgage");
 		function.setCaption("Mortgage/Fixed rate interest");
 		function.setDescription("Mortgage formula calculator c = P r / (1 - (1+r)^-N) ; if r=0 then c=P/N");
@@ -223,16 +257,6 @@ public class VarCalc02 {
 		function.setVariableTypes(new VariableType[]{typeCurrency,typeTime,typeInterest});
 		function.setVariables(new FunctionVariable[]{varPayment,varPrincipal,varDuration,varInterest});
 		function.setDefaultTargetVariable("c");
-		function.setScriptLanguage("JavaScript");
-		// formula converted for exponential ratio = Ln(1 + r)
-		// Using expm1 for improved precision
-		// Need to access java Math, as of Nov 2014 expm1 is experimental in javascript
-		//    (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/expm1)
-		function.setScriptCode("r==0.0 ? P / N - c : (P * java.lang.Math.expm1(r) / - java.lang.Math.expm1(r * -N)) - c");
-		// scriptCode also works with multiple statements
-		//function.setScriptCode("if(r==0.0) { P / N - c } else { (P * java.lang.Math.expm1(r) / - java.lang.Math.expm1(r * -N)) - c }");
-
-		return function;
 	}
 
 	
